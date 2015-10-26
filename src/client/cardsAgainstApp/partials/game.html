@@ -14,7 +14,6 @@
       </button>
       <div class="col-md-10">{{ card.body }}</div>
     </div>
-    {{ vm.selectedCard }}
     <button type="button"
             class="btn btn-default"
             ng-click="vm.chooseCard(vm.selectedCard)">
@@ -29,6 +28,23 @@
 <div ng-if="vm.gameData.round.state == 'JudgeChoose'">
   <div ng-if="vm.playerData.isJudge">
     <header>Pick a winner!</header>
+    <div class="row" ng-repeat="choice in vm.playerData.choices track by choice.id">
+      <button type="button"
+              class="btn col-md-2"
+              ng-class="{
+                'btn-primary' : vm.selectedWinner === choice,
+                'btn-default' : vm.selectedWinner !== choice
+              }"
+              ng-click="vm.selectedWinner = choice">
+              Select
+      </button>
+      <div class="col-md-10">{{ choice.body }}</div>
+    </div>
+    <button type="button"
+            class="btn btn-default"
+            ng-click="vm.chooseWinner(vm.selectedCard)">
+            Finalize
+    </button>
   </div>
   <div ng-if="!vm.playerData.isJudge">
     <header>Waiting for judge...</header>

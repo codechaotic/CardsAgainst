@@ -9,7 +9,8 @@
         game_start: 'game start',
         game_data: 'game data',
         player_data: 'player data',
-        choose_card: 'choose card'
+        choose_card: 'choose card',
+        choose_winner: 'choose winner'
       }
     });
 })();

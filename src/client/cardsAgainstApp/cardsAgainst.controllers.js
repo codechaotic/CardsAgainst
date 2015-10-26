@@ -37,5 +37,9 @@
     vm.chooseCard = function(card) {
       GameService.chooseCard(card);
     };
+
+    vm.chooseWinner = function(choice) {
+      GameService.chooseWinner(choice);
+    };
   }
 })();

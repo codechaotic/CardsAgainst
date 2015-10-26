@@ -106,6 +106,9 @@ function Game(settings, players, firstJudge) {
   }
 
   function beforeJudgeChoose() {
+    judge.choices = playerChoices();
+    game.emit(EVENTS.game.player_data, judge);
+    
     var duration = settings.judgeTime * 1000;
     timer = setTimeout(timeoutJudgeChoose, duration);
     timerExpires = Date.now() + duration;
@@ -178,6 +181,10 @@ function Game(settings, players, firstJudge) {
   }
 
   function allPlayersChosen() {
-    return _.all(_.without(players, judge), 'choice');
+    return _(players).without(judge).all('choice');
+  }
+
+  function playerChoices() {
+    return _(players).map('choice').compact().value();
   }
 }
