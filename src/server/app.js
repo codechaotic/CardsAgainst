@@ -112,6 +112,9 @@ io.on('connection', function (socket) {
         var game = new Game(gameSettings, activePlayers(), host);
 
         // Broadcast game states
+        
+        // NOTE this probably belongs inside of game.js and Game probably
+        // shouldn't be an event emitter.
 
         game.on(EVENTS.game.game_start, function() {
           io.emit(EVENTS.socket.game_start);
@@ -131,10 +134,18 @@ io.on('connection', function (socket) {
 
         players.forEach(function(player) {
           player.socket.on(EVENTS.socket.choose_card, function(card) {
-            console.log('%s chose card %s', player.name, card.id);
+            console.log('Player (%s) chose card %s', player.name, card.id);
             game.chooseCard(player,card);
           });
+          player.socket.on(EVENTS.socket.choose_winner, function(choice) {
+            if(player.isJudge) {
+              console.log('Judge %s chose winner %s', player.name, choice.id);
+              game.chooseWinner(choice);
+            }
+          });
         });
+
+
 
         game.start();
       });

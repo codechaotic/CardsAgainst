@@ -17,6 +17,7 @@ function Game(settings, players, firstJudge) {
   var timer;
   var timerExpires;
   var judge;
+  var winner;
 
   _.defaults(settings, {
     handSize: 7,
@@ -71,12 +72,22 @@ function Game(settings, players, firstJudge) {
   * [Can only be used once during the PlayerChoose state]
   */
   this.chooseCard = function(player, card) {
+    //TODO remove card after use
     if(_.find(player.cards, card)) {
       player.choice = card;
       if(allPlayersChosen()) {
         gameState.finish();
       }
       game.emit(EVENTS.game.game_data, gameData());
+    }
+  };
+
+  this.chooseWinner = function(choice) {
+    var player = _.find(players, { choice: choice });
+    if(player) {
+      console.log(player.name);
+      winner = player;
+      gameState.finish();
     }
   };
 
@@ -108,7 +119,7 @@ function Game(settings, players, firstJudge) {
   function beforeJudgeChoose() {
     judge.choices = playerChoices();
     game.emit(EVENTS.game.player_data, judge);
-    
+
     var duration = settings.judgeTime * 1000;
     timer = setTimeout(timeoutJudgeChoose, duration);
     timerExpires = Date.now() + duration;
@@ -124,7 +135,7 @@ function Game(settings, players, firstJudge) {
   }
 
   function beforeShowWinner() {
-
+    game.emit(EVENTS.game.game_data, gameData());
   }
 
   function timeoutShowWinner() {
@@ -150,6 +161,8 @@ function Game(settings, players, firstJudge) {
     // choose next topic
     topic = blackDeck.draw();
 
+    winner = null;
+
     // setup each player for the round
     players.forEach(function(player) {
       while(player.cards.length < settings.handSize) {
@@ -165,7 +178,8 @@ function Game(settings, players, firstJudge) {
       round: {
         state: gameState.currentState(),
         topic: topic,
-        judge: judge.name
+        judge: judge?judge.name:null,
+        winner: winner?winner.name:null
       },
       players: _(players)
         .indexBy('name')

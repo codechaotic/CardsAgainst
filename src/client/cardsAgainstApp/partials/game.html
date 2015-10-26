@@ -1,4 +1,5 @@
-{{ vm.gameData.round.state }}
+<div>Topic: {{ vm.gameData.round.topic.body }}</div>
+
 <div ng-if="vm.gameData.round.state == 'PlayersChoose'">
   <div ng-if="!vm.playerData.isJudge">
     <header>Choose a card</header>
@@ -25,6 +26,7 @@
     Waiting for players to finish
   </div>
 </div>
+
 <div ng-if="vm.gameData.round.state == 'JudgeChoose'">
   <div ng-if="vm.playerData.isJudge">
     <header>Pick a winner!</header>
@@ -42,7 +44,7 @@
     </div>
     <button type="button"
             class="btn btn-default"
-            ng-click="vm.chooseWinner(vm.selectedCard)">
+            ng-click="vm.chooseWinner(vm.selectedWinner)">
             Finalize
     </button>
   </div>
